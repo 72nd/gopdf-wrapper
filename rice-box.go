@@ -1,4 +1,4 @@
-package utils
+package gopdf_wrapper
 
 import (
 	"time"

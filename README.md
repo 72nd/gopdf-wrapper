@@ -7,4 +7,4 @@ The [gopdf](https://github.com/signintech/gopdf) library is a great library for 
 - Add multiline text.
 - gopdf-wrapper embeds the [Lato font](https://www.latofonts.com/) and [Liberation Sans](https://github.com/liberationfonts/liberation-fonts) which is probably enough for simple reports.
 
-The code of this library is licensed under the [MIT License]() Lato as a font on the other hand under the [SIL Open Font License (OFL)](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL). 
+The code of this library is licensed under the [MIT License]() the fonts (Lato and Liberation Sans) on the other hand are licensed under the [SIL Open Font License (OFL)](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL). 

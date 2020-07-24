@@ -42,6 +42,10 @@ func NewLatoFamily() (*FontFamily, error) {
 	if err != nil {
 		return nil, err
 	}
+	italic, err := LatoItalic()
+	if err != nil {
+		return nil, err
+	}
 	normal, err := LatoRegular()
 	if err != nil {
 		return nil, err
@@ -49,6 +53,7 @@ func NewLatoFamily() (*FontFamily, error) {
 	return &FontFamily{
 		Name:   "lato",
 		Bold:   heavy,
+		Italic: italic,
 		Normal: normal,
 	}, nil
 }
@@ -58,9 +63,14 @@ func LatoHeavy() ([]byte, error) {
 	return loadFromRice("Lato-Heavy.ttf", "lato heavy")
 }
 
+// LatoItalic returns the italic style of the Lato font.
+func LatoItalic() ([]byte, error) {
+	return loadFromRice("Lato-Italic.ttf", "lato italic")
+}
+
 // LatoRegular returns the regular style of the Lato font.
 func LatoRegular() ([]byte, error) {
-	return loadFromRice("Lato-Regular.ttf", "lato heavy")
+	return loadFromRice("Lato-Regular.ttf", "lato normal")
 }
 
 // NewLiberationSansFamily returns a new FontFamily of the Liberation Sans font.

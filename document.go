@@ -143,7 +143,7 @@ func (d *Doc) AddMultilineText(x, y float64, content string) {
 	data := strings.Split(content, "\n")
 	for i := range data {
 		d.AddText(x, y, data[i])
-		y += d.LineHeight()
+		y += d.DefaultLineHeight()
 	}
 }
 
@@ -155,7 +155,7 @@ func (d *Doc) AddFormattedMultilineText(x, y float64, content string, size int, 
 	data := strings.Split(content, "\n")
 	for i := range data {
 		d.AddText(x, y, data[i])
-		y += d.LineHeight()
+		y += d.DefaultLineHeight()
 	}
 	d.DefaultFontSize()
 	d.DefaultFontStyle()
@@ -169,9 +169,13 @@ func (d *Doc) AddLine(x1, y1, x2, y2, width float64, lineStyle LineStyle) {
 	d.GoPdf.Line(x1, y1, x2, y2)
 }
 
-// LineHeight calculates and returns the line height.
-func (d Doc) LineHeight() float64 {
+// DefaultLineHeight calculates and returns the line height.
+func (d Doc) DefaultLineHeight() float64 {
 	return d.capValue * float64(d.fontSize) / 2000.0 * d.lineSpread
+}
+
+func (d Doc) LineHeight(fontSize int) float64 {
+	return d.capValue * float64(fontSize) / 2000.0 * d.lineSpread
 }
 
 func (d Doc) textLineWidth() float64 {

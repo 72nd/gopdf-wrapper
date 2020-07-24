@@ -107,5 +107,5 @@ func LiberationSansItalic() ([]byte, error) {
 
 // LiberationSansRegular returns the normal style of the Liberation Sans font.
 func LiberationSansRegular() ([]byte, error) {
-	return loadFromRice("LiberationSans-Bold.ttf", "liberations sans regular")
+	return loadFromRice("LiberationSans-Regular.ttf", "liberations sans regular")
 }

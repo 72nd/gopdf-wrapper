@@ -14,3 +14,12 @@ const (
 
 // fontFunction is a function which returns a font as bytes and an optional error.
 type fontFunction func() ([]byte, error)
+
+// LineStyle wraps the gopdf line styles into a type.
+type LineStyle string
+
+const (
+	SolidLine  LineStyle = ""
+	DashedLine           = "dashed"
+	DottedLine           = "dotted"
+)

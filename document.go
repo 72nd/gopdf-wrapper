@@ -148,6 +148,14 @@ func (d *Doc) AddFormattedMultilineText(x, y float64, content string, size int, 
 	d.DefaultFontStyle()
 }
 
+// AddLine adds a line to the Document.
+func (d *Doc) AddLine(x1, y1, x2, y2, width float64, lineStyle LineStyle) {
+	d.GoPdf.SetLineWidth(width)
+	style := string(lineStyle)
+	d.GoPdf.SetLineType(style)
+	d.GoPdf.Line(x1, y1, x2, y2)
+}
+
 // LineHeight calculates and returns the line height.
 func (d Doc) LineHeight() float64 {
 	return d.capValue * float64(d.fontSize) / 2000.0 * d.lineSpread

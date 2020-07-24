@@ -10,8 +10,9 @@ import (
 // FontFamily encapsulates a font family for easy adding to the document
 type FontFamily struct {
 	Name   string
-	Normal []byte
 	Bold   []byte
+	Italic []byte
+	Normal []byte
 }
 
 func loadFromRice(filename, description string) ([]byte, error) {
@@ -35,6 +36,7 @@ func riceBox() (*rice.Box, error) {
 	return box, nil
 }
 
+// NewLatoFamily returns a new FontFamily of the Lato font.
 func NewLatoFamily() (*FontFamily, error) {
 	heavy, err := LatoHeavy()
 	if err != nil {
@@ -46,8 +48,9 @@ func NewLatoFamily() (*FontFamily, error) {
 	}
 	return &FontFamily{
 		Name:   "lato",
+		Bold:   heavy,
 		Normal: normal,
-		Bold:   heavy}, nil
+	}, nil
 }
 
 // LatoHeavy returns the heavy style of the Lato font.
@@ -58,4 +61,41 @@ func LatoHeavy() ([]byte, error) {
 // LatoRegular returns the regular style of the Lato font.
 func LatoRegular() ([]byte, error) {
 	return loadFromRice("Lato-Regular.ttf", "lato heavy")
+}
+
+// NewLiberationSansFamily returns a new FontFamily of the Liberation Sans font.
+func NewLiberationSansFamily() (*FontFamily, error) {
+	bold, err := LiberationSansBold()
+	if err != nil {
+		return nil, err
+	}
+	italic, err := LiberationSansItalic()
+	if err != nil {
+		return nil, err
+	}
+	normal, err := LiberationSansRegular()
+	if err != nil {
+		return nil, err
+	}
+	return &FontFamily{
+		Name:   "liberation-sans",
+		Bold:   bold,
+		Italic: italic,
+		Normal: normal,
+	}, nil
+}
+
+// LiberationSansBold returns the bold style of the Liberation Sans font.
+func LiberationSansBold() ([]byte, error) {
+	return loadFromRice("LiberationSans-Bold.ttf", "liberations sans bold")
+}
+
+// LiberationSansItalic returns the italic style of the Liberation Sans font.
+func LiberationSansItalic() ([]byte, error) {
+	return loadFromRice("LiberationSans-Italic.ttf", "liberations sans italic")
+}
+
+// LiberationSansRegular returns the normal style of the Liberation Sans font.
+func LiberationSansRegular() ([]byte, error) {
+	return loadFromRice("LiberationSans-Bold.ttf", "liberations sans regular")
 }

@@ -42,7 +42,7 @@ func NewDoc(fontSize int, lineSpread float64) (*Doc, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc.AddFont(latoRegular, "regular", RegularStyle, true)
+	doc.AddFont(latoRegular, "regular", NormalStyle, true)
 
 	latoHeavy, err := LatoHeavy()
 	if err != nil {

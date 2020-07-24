@@ -7,16 +7,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/72nd/gopdf-wrapper/fonts"
 	"github.com/signintech/gopdf"
 	"github.com/signintech/gopdf/fontmaker/core"
 )
 
-// FontStyle wraps the gopdf font style constants into a type.
-type FontStyle int
-
 // Doc is the basic structure for a PDF file.
 type Doc struct {
+	gopdf.GoPdf
 	fontSize        int
 	defaultFontSize int
 	lineSpread      float64
@@ -24,7 +21,6 @@ type Doc struct {
 	fontStyle       string
 	currentX        float64
 	currentY        float64
-	Pdf             *gopdf.GoPdf
 }
 
 // NewDoc returns a new Doc.
@@ -32,60 +28,63 @@ func NewDoc(fontSize int, lineSpread float64) (*Doc, error) {
 	pdf := gopdf.GoPdf{}
 	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4, Unit: gopdf.Unit_MM})
 
-	if err := pdf.AddTTFFontByReaderWithOption("lato", bytes.NewBuffer(utils.LatoHeavy()), gopdf.TtfOption{Style: gopdf.Bold}); err != nil {
-		return nil, fmt.Errorf("error adding lato heavy to utils: ", err)
-	}
-	latoRegular, err := fonts.LatoRegular()
-	if err != nil {
-		return nil, err
-	}
-	if err := pdf.AddTTFFontByReaderWithOption("lato", bytes.NewBuffer(latoRegular), gopdf.TtfOption{Style: gopdf.Regular, UseKerning: true}); err != nil {
-		logrus.Fatal("error adding lato regular to utils: ", err)
-	}
-	var parser core.TTFParser
-	if err := parser.ParseByReader(bytes.NewBuffer(latoRegular)); err != nil {
-		logrus.Fatal("error while parsing font for height calculation: ", err)
-	}
 	doc := Doc{
+		GoPdf:           pdf,
 		fontSize:        fontSize,
 		defaultFontSize: fontSize,
 		lineSpread:      lineSpread,
-		capValue:        float64(parser.CapHeight()) * 1000.0 / float64(parser.UnitsPerEm()),
 		fontStyle:       "",
 		currentX:        0,
 		currentY:        0,
-		Pdf:             pdf,
 	}
+
+	latoRegular, err := LatoRegular()
+	if err != nil {
+		return nil, err
+	}
+	doc.AddFont(latoRegular, "regular", RegularStyle, true)
+
+	latoHeavy, err := LatoHeavy()
+	if err != nil {
+		return nil, err
+	}
+	doc.AddFont(latoHeavy, "bold", BoldStyle, false)
+
+	var parser core.TTFParser
+	if err := parser.ParseByReader(bytes.NewBuffer(latoRegular)); err != nil {
+		return nil, fmt.Errorf("error while parsing font for height calculation: %s", err)
+	}
+	doc.capValue = float64(parser.CapHeight()) * 1000.0 / float64(parser.UnitsPerEm())
 	doc.SetFontSize(fontSize)
-	return doc
+	return &doc, nil
 }
 
-// AddFont adds a font to a document. 
-func (d *Doc) AddFont(pdf *gopdf.GoPdf, fontFunc fonts.FontFunction, fontStyle int, useKerning bool) error {
-	font, err := fontFunc()
+// AddFont adds a font to a document.
+func (d *Doc) AddFont(font []byte, name string, fontStyle FontStyle, useKerning bool) error {
+	style := int(fontStyle)
+	err := d.GoPdf.AddTTFFontByReaderWithOption(name, bytes.NewBuffer(font), gopdf.TtfOption{Style: style, UseKerning: useKerning})
 	if err != nil {
 		return err
 	}
-	if err := pdf.AddTTFFontByReaderWithOption("lato", bytes.NewBuffer(font), gopdf.TtfOption{Style: fontStyle, UseKerning: useKerning}); err != nil {
-		return err
-	}
+	return nil
 }
 
 // SetPosition encapsulates the SetX and SetY methods of gopdf. New elements will be added
 // at the currently set position.
 func (d *Doc) SetPosition(x, y float64) {
-	d.Pdf.SetX(x)
+	d.GoPdf.SetX(x)
 	d.currentX = x
-	d.Pdf.SetY(y)
+	d.GoPdf.SetY(y)
 	d.currentY = y
 }
 
 // SetFontSize sets the font size for all elements added after.
-func (d *Doc) SetFontSize(size int) {
+func (d *Doc) SetFontSize(size int) error {
 	d.fontSize = size
-	if err := d.Pdf.SetFont("lato", "", size); err != nil {
-		logrus.Fatal("error while changing Pdf font size: ", err)
+	if err := d.GoPdf.SetFont("lato", "", size); err != nil {
+		return fmt.Errorf("error while changing PDF font size: %s", err)
 	}
+	return nil
 }
 
 // DefaultFontSize resets the font size to the initial default.
@@ -94,11 +93,12 @@ func (d *Doc) DefaultFontSize() {
 }
 
 // SetFontStyle changes the font style (italic, bold...) for elements added afterwards.
-func (d *Doc) SetFontStyle(style string) {
-	if err := d.Pdf.SetFont("lato", style, d.fontSize); err != nil {
-		logrus.Fatal("error while changing Pdf font style: ", err)
+func (d *Doc) SetFontStyle(style string) error {
+	if err := d.GoPdf.SetFont("lato", style, d.fontSize); err != nil {
+		return fmt.Errorf("error while changing PDF font style: %s", err)
 	}
 	d.fontStyle = style
+	return nil
 }
 
 // DefaultFontStyle resets the font style to normal style.
@@ -107,11 +107,12 @@ func (d *Doc) DefaultFontStyle() {
 }
 
 // AddText adds a text field at the given position.
-func (d *Doc) AddText(x, y float64, content string) {
+func (d *Doc) AddText(x, y float64, content string) error {
 	d.SetPosition(x, y)
-	if err := d.Pdf.Cell(nil, content); err != nil {
-		logrus.Fatal("error adding text to Pdf: ", err)
+	if err := d.GoPdf.Cell(nil, content); err != nil {
+		return fmt.Errorf("error adding text to PDF: %s", err)
 	}
+	return nil
 }
 
 // AddFormattedText adds a text field at the given position with individual size and style.
@@ -153,5 +154,5 @@ func (d Doc) LineHeight() float64 {
 }
 
 func (d Doc) textLineWidth() float64 {
-	return gopdf.PageSizeA4.W - d.Pdf.MarginLeft() - d.Pdf.MarginRight()
+	return gopdf.PageSizeA4.W - d.GoPdf.MarginLeft() - d.GoPdf.MarginRight()
 }

@@ -16,6 +16,7 @@ import (
 type Doc struct {
 	gopdf.GoPdf
 	fontSize        int
+	fontName        string
 	defaultFontSize int
 	lineSpread      float64
 	capValue        float64
@@ -60,6 +61,7 @@ func (d *Doc) SetFontFamily(family fonts.FontFamily) error {
 		return fmt.Errorf("error while parsing font for height calculation: %s", err)
 	}
 	d.capValue = float64(parser.CapHeight()) * 1000.0 / float64(parser.UnitsPerEm())
+	d.fontName = family.Name
 	return nil
 }
 
@@ -85,7 +87,7 @@ func (d *Doc) SetPosition(x, y float64) {
 // SetFontSize sets the font size for all elements added after.
 func (d *Doc) SetFontSize(size int) error {
 	d.fontSize = size
-	if err := d.GoPdf.SetFont("lato", "", size); err != nil {
+	if err := d.GoPdf.SetFont(d.fontName, "", size); err != nil {
 		return fmt.Errorf("error while changing PDF font size: %s", err)
 	}
 	return nil
@@ -98,7 +100,7 @@ func (d *Doc) DefaultFontSize() {
 
 // SetFontStyle changes the font style (italic, bold...) for elements added afterwards.
 func (d *Doc) SetFontStyle(style string) error {
-	if err := d.GoPdf.SetFont("lato", style, d.fontSize); err != nil {
+	if err := d.GoPdf.SetFont(d.fontName, style, d.fontSize); err != nil {
 		return fmt.Errorf("error while changing PDF font style: %s", err)
 	}
 	d.fontStyle = style
@@ -117,6 +119,13 @@ func (d *Doc) AddText(x, y float64, content string) error {
 		return fmt.Errorf("error adding text to PDF: %s", err)
 	}
 	return nil
+}
+
+// AddSizedText adds a text field at the given position with the given size.
+func (d *Doc) AddSizedText(x, y float64, content string, size int) {
+	d.SetFontSize(size)
+	d.AddText(x, y, content)
+	d.DefaultFontSize()
 }
 
 // AddFormattedText adds a text field at the given position with individual size and style.

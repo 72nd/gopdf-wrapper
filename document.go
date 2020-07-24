@@ -43,7 +43,7 @@ func NewDoc(fontSize int, lineSpread float64) (*Doc, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc.SetFontFamily(latoFamily)
+	doc.SetFontFamily(*latoFamily)
 
 	doc.SetFontSize(fontSize)
 	return &doc, nil
@@ -51,8 +51,9 @@ func NewDoc(fontSize int, lineSpread float64) (*Doc, error) {
 
 // SetFontFamily sets the used font family.
 func (d *Doc) SetFontFamily(family fonts.FontFamily) error {
-	d.setFont(family.Normal, family.Name, NormalStyle, true)
 	d.setFont(family.Bold, family.Name, BoldStyle, true)
+	d.setFont(family.Italic, family.Name, ItalicStyle, true)
+	d.setFont(family.Normal, family.Name, NormalStyle, true)
 
 	var parser core.TTFParser
 	if err := parser.ParseByReader(bytes.NewBuffer(family.Normal)); err != nil {

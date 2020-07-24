@@ -1,18 +1,23 @@
 // fonts package provides the embedded [Lato fonts](https://www.latofonts.com/).
-package gopdf_wrapper
+package fonts
 
 import (
 	"fmt"
-
-	rice "github.com/GeertJohan/go.rice"
 )
 
-func riceBox() (*rice.Box, error) {
-	box, err := rice.FindBox("utils")
+func NewLatoFamily() (*FontFamily, error) {
+	heavy, err := LatoHeavy()
 	if err != nil {
-		return nil, fmt.Errorf("rice find box failed: %s", err)
+		return nil, err
 	}
-	return box, nil
+	normal, err := LatoRegular()
+	if err != nil {
+		return nil, err
+	}
+	return &FontFamily{
+		Name:   "lato",
+		Normal: normal,
+		Bold:   heavy}, nil
 }
 
 // LatoHeavy returns the heavy style of the Lato font.

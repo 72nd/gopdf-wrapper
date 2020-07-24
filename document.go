@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/72nd/gopdf-wrapper/fonts"
 	"github.com/signintech/gopdf"
 	"github.com/signintech/gopdf/fontmaker/core"
 )
@@ -38,29 +39,31 @@ func NewDoc(fontSize int, lineSpread float64) (*Doc, error) {
 		currentY:        0,
 	}
 
-	latoRegular, err := LatoRegular()
+	latoFamily, err := fonts.NewLatoFamily()
 	if err != nil {
 		return nil, err
 	}
-	doc.AddFont(latoRegular, "regular", NormalStyle, true)
+	doc.SetFontFamily(latoFamily)
 
-	latoHeavy, err := LatoHeavy()
-	if err != nil {
-		return nil, err
-	}
-	doc.AddFont(latoHeavy, "bold", BoldStyle, false)
-
-	var parser core.TTFParser
-	if err := parser.ParseByReader(bytes.NewBuffer(latoRegular)); err != nil {
-		return nil, fmt.Errorf("error while parsing font for height calculation: %s", err)
-	}
-	doc.capValue = float64(parser.CapHeight()) * 1000.0 / float64(parser.UnitsPerEm())
 	doc.SetFontSize(fontSize)
 	return &doc, nil
 }
 
-// AddFont adds a font to a document.
-func (d *Doc) AddFont(font []byte, name string, fontStyle FontStyle, useKerning bool) error {
+// SetFontFamily sets the used font family.
+func (d *Doc) SetFontFamily(family fonts.FontFamily) error {
+	d.setFont(family.Normal, family.Name, NormalStyle, true)
+	d.setFont(family.Bold, family.Name, BoldStyle, true)
+
+	var parser core.TTFParser
+	if err := parser.ParseByReader(bytes.NewBuffer(family.Normal)); err != nil {
+		return fmt.Errorf("error while parsing font for height calculation: %s", err)
+	}
+	d.capValue = float64(parser.CapHeight()) * 1000.0 / float64(parser.UnitsPerEm())
+	return nil
+}
+
+// setFont adds a font to a document.
+func (d *Doc) setFont(font []byte, name string, fontStyle FontStyle, useKerning bool) error {
 	style := int(fontStyle)
 	err := d.GoPdf.AddTTFFontByReaderWithOption(name, bytes.NewBuffer(font), gopdf.TtfOption{Style: style, UseKerning: useKerning})
 	if err != nil {

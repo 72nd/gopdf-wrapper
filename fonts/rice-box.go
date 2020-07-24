@@ -1,4 +1,4 @@
-package gopdf_wrapper
+package fonts
 
 import (
 	"time"

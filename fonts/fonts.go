@@ -9,6 +9,7 @@ import (
 
 // FontFamily encapsulates a font family for easy adding to the document
 type FontFamily struct {
+	Name   string
 	Normal []byte
 	Bold   []byte
 }

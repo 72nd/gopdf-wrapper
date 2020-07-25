@@ -1,4 +1,4 @@
-// fonts contains the embedded fonts and utility functions.
+// Package fonts contains the embedded fonts and utility functions.
 package fonts
 
 import (

@@ -47,4 +47,4 @@ doc.WritePdf("document.pdf")
 
 This generates the following output:
 
-[Output](misc/example01.png)
+![Output](misc/example01.png)

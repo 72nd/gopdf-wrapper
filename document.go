@@ -161,6 +161,32 @@ func (d *Doc) AddFormattedMultilineText(x, y float64, content string, size int, 
 	d.DefaultFontStyle()
 }
 
+// AddWrapText automatically wraps the text when the line reaches x2.
+func (d *Doc) AddWrapText(x1, y, x2 float64, content string) {
+	width := x2 - x1
+	chars := []rune(content)
+	lines := 0.0
+	var i, j int
+	for j = 0; j < len(chars); j++ {
+		l, _ := d.GoPdf.MeasureTextWidth(string(chars[i:j]))
+		if l >= width {
+			d.AddText(x1, y + d.LineHeight(d.defaultFontSize) * lines, string(chars[i:j-1]))
+			i = j - 1
+			lines++
+		}
+	}
+	// fmt.Println(string(chars[]))
+}
+
+// AddFormattedWrapText automatically wraps the formatted text when the line reaches x2.
+func (d *Doc) AddFormattedWrapText(x1, y, x2 float64, content string, size int, style string) {
+	d.SetFontSize(size)
+	d.SetFontStyle(style)
+	d.AddWrapText(x1, y, x2, content)
+	d.DefaultFontStyle()
+	d.DefaultFontSize()
+}
+
 // AddLine adds a line to the Document.
 func (d *Doc) AddLine(x1, y1, x2, y2, width float64, lineStyle LineStyle) {
 	d.GoPdf.SetLineWidth(width)

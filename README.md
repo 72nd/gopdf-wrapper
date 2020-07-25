@@ -1,5 +1,7 @@
 # gopdf-wrapper
 
+[![GoDoc](https://godoc.org/github.com/72nd/gopdf-wrapper?status.svg)](https://godoc.org/github.com/72nd/gopdf-wrapper) [![Go Report Card](https://goreportcard.com/badge/github.com/72nd/gopdf-wrapper)](https://goreportcard.com/report/github.com/72nd/gopdf-wrapper)
+
 The [gopdf](https://github.com/signintech/gopdf) library is a great library for creating PDFs in golang. This wrapper provides some convince abstractions for recurring tasks. Like:
 
 - Maintain a default font size

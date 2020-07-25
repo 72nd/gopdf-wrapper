@@ -170,7 +170,7 @@ func (d *Doc) AddWrapText(x1, y, x2 float64, content string) {
 	for j = 0; j < len(chars); j++ {
 		l, _ := d.GoPdf.MeasureTextWidth(string(chars[i:j]))
 		if l >= width {
-			d.AddText(x1, y + d.LineHeight(d.defaultFontSize) * lines, string(chars[i:j-1]))
+			d.AddText(x1, y+d.LineHeight(d.defaultFontSize)*lines, string(chars[i:j-1]))
 			i = j - 1
 			lines++
 		}

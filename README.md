@@ -5,6 +5,7 @@ The [gopdf](https://github.com/signintech/gopdf) library is a great library for 
 - Maintain a default font size
 - Add formatted text
 - Add multiline text
+- Auto wrap text
 - gopdf-wrapper embeds the [Lato font](https://www.latofonts.com/) and [Liberation Sans](https://github.com/liberationfonts/liberation-fonts) which is probably enough for simple reports
 
 The code of this library is licensed under the [MIT License]() the fonts (Lato and Liberation Sans) on the other hand are licensed under the [SIL Open Font License (OFL)](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL). 
@@ -37,6 +38,13 @@ doc.AddLine(10, 160, 30, 140, 0.1, SolidLine)
 doc.AddLine(10, 150, 30, 150, 0.1, SolidLine)
 doc.AddLine(20, 140, 20, 160, 0.1, SolidLine)
 
+// Image
+doc.Image("image.png", 10, 190, nil)
+
 // Write document to PDF.
 doc.WritePdf("document.pdf")
 ```
+
+This generates the following output:
+
+[Output](misc/example01.png)

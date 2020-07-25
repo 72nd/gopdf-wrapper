@@ -1,6 +1,6 @@
-// gopdf-wrapper is a simple wrapper around the [gopdf](https://github.com/signintech/gopdf) library
+// Package gopdfwrapper is a simple wrapper around the [gopdf](https://github.com/signintech/gopdf) library
 // aiming to simplify recurring tasks of creating PDF's with gopdf.
-package gopdf_wrapper
+package gopdfwrapper
 
 import (
 	"bytes"
@@ -174,6 +174,7 @@ func (d Doc) DefaultLineHeight() float64 {
 	return d.capValue * float64(d.fontSize) / 2000.0 * d.lineSpread
 }
 
+// LineHeight returns the line height of a text line with a given height in mm.
 func (d Doc) LineHeight(fontSize int) float64 {
 	return d.capValue * float64(fontSize) / 2000.0 * d.lineSpread
 }

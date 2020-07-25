@@ -1,4 +1,4 @@
-package gopdf_wrapper
+package gopdfwrapper
 
 import "github.com/signintech/gopdf"
 
@@ -6,10 +6,14 @@ import "github.com/signintech/gopdf"
 type FontStyle int
 
 const (
-	NormalStyle    FontStyle = gopdf.Regular
-	ItalicStyle              = gopdf.Italic
-	BoldStyle                = gopdf.Bold
-	UnderlineStyle           = gopdf.Underline
+	// NormalStyle is the normal font style aka. regular style.
+	NormalStyle FontStyle = gopdf.Regular
+	// ItalicStyle represents the italic font style.
+	ItalicStyle = gopdf.Italic
+	// BoldStyle represents the bold font style.
+	BoldStyle = gopdf.Bold
+	// UnderlineStyle represents the underline font style.
+	UnderlineStyle = gopdf.Underline
 )
 
 // fontFunction is a function which returns a font as bytes and an optional error.
@@ -19,7 +23,10 @@ type fontFunction func() ([]byte, error)
 type LineStyle string
 
 const (
-	SolidLine  LineStyle = ""
-	DashedLine           = "dashed"
-	DottedLine           = "dotted"
+	// SolidLine is a solid line.
+	SolidLine LineStyle = ""
+	// DashedLine is a dashed line.
+	DashedLine = "dashed"
+	// DottedLine is a dotted line.
+	DottedLine = "dotted"
 )

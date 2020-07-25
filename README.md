@@ -13,8 +13,13 @@ The code of this library is licensed under the [MIT License]() the fonts (Lato a
 ## Example
 
 ```golang
+import (
+	"github.com/72nd/gopdf-wrapper/fonts"
+	wrapper "github.com/72nd/gopdf-wrapper"
+)
+
 // New document with font size 12 and line spread 1. 
-doc, err := NewDoc(12, 1)
+doc, err := wrapper.NewDoc(12, 1)
 if err != nil {
 	t.Error(err)
 }
